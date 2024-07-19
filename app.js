@@ -32,15 +32,45 @@ const woody = {
 }
 
 woody.init({
-	url:'https://tv5.anikor.pics/rick-and-morty-season-7-episode-4/',
+	url:'https://tv5.anikor.pics/series/komedi-kacau-2024/',
 	setConfig(p){
 		p.config.request.url = this.url;
 	},
 	sf($){
-		$('a').each((index, element) => {
-	      const linkText = $(element).text();
-	      const linkHref = $(element).attr('href');
-	      console.log(`Link ${index + 1}: ${linkText} (${linkHref})`);
+		const series = {
+			links:{}
+		};
+		// working series title
+		$('.entry-title').each((index,element)=>{
+			series.title = $(element).text();
+		})
+
+		// working on series props
+
+		// working on series sinopsis
+		$('.entry-content p').each((index,element)=>{
+			series.sinopsis = $(element).text();	
+		})
+
+		// working on series thumbnail and icon
+		$('.thumb img').each((index,img)=>{
+			series.thumb_img = $(img).attr('src');
+		})
+
+		// working on downloa links
+		$('.soraurlx').each((index, element) => {
+			const item = {};let resolution;
+			$(element).children((childIndex,child)=>{
+				child = $(child);
+				const tag_ = child.prop('tagName');
+				if(tag_==='STRONG'){
+					resolution = child.text();
+				}else{
+					item[child.text()] = child.attr('href');
+				}
+			})
+			series.links[resolution] = item;
 	    });
+	    console.log(series)
 	}
 });
