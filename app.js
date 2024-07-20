@@ -38,63 +38,33 @@ const woody = {
 
 // working on details series
 
-woody.init({
-	url:'https://anikun.sbs/anime/b-the-beginning/',
-	setConfig(p){
-		p.config.request.url = this.url;
-	},
-	sf($){
-		const series = {
-			links:{}
-		};
-		// working series title
-		$('.entry-title').each((index,element)=>{
-			series.title = $(element).text();
-		})
-
-		// working on series props
-		$('.info-content .spe span').each((index,element)=>{
-			const props = $(element).text().split(': ');
-			props[1] = props[1].split(', ');
-			series[props[0]] = props[1].length > 1 ? props[1] : props[0];
-		})
-
-		// working on series sinopsis
-		$('.entry-content').each((index,element)=>{
-			series.sinopsis = $(element).text();	
-		})
-
-		// working on series thumbnail and icon
-		$('.thumb img').each((index,img)=>{
-			series.thumb_img = $(img).attr('src');
-		})
-
-		// working on downloa links
-		$('.soraurlx').each((index, element) => {
-			const item = {};let resolution;
-			$(element).children((childIndex,child)=>{
-				child = $(child);
-				const tag_ = child.prop('tagName');
-				if(tag_==='STRONG'){
-					resolution = child.text();
-				}else{
-					item[child.text()] = child.attr('href');
-				}
-			})
-			series.links[resolution] = item;
-	    });
-	    console.log(series)
-	}
-});
+let urls_data = null;
+let index_max = 10;
+let index = 0;
+let data_series = null;
 
 const work =  async ()=>{
-
+	if(!urls_data)
+		await new Promise((resolve,reject)=>{
+			fs.readFile('./file_list.data','utf-8',(err,data)=>{
+				urls_data = JSON.parse(data);
+				index_max = urls_data.length;
+				resolve();
+			})
+		})
+	if(!data_series)
+		await new Promise((resolve,reject)=>{
+			fs.readFile('./series_.data','utf-8',(err,data)=>{
+				data_series = JSON.parse(data);
+				resolve();
+			})
+		})
 	woody.init({
-		url:'https://anikun.sbs/anime/b-the-beginning/',
+		url:urls_data[index],
 		setConfig(p){
 			p.config.request.url = this.url;
 		},
-		sf($){
+		async sf($){
 			const series = {
 				links:{}
 			};
@@ -120,7 +90,7 @@ const work =  async ()=>{
 				series.thumb_img = $(img).attr('src');
 			})
 
-			// working on downloa links
+			// working on download links
 			$('.soraurlx').each((index, element) => {
 				const item = {};let resolution;
 				$(element).children((childIndex,child)=>{
@@ -134,7 +104,17 @@ const work =  async ()=>{
 				})
 				series.links[resolution] = item;
 		    });
-		    console.log(series)
+		    data_series[series.title] = series;
+		    index += 1;
+		    if(index === index_max){
+		    	await new Promise((resolve,reject)=>{
+		    		fs.writeFile('./series_.data',JSON.stringify(data_series),(err)=>{
+		    			resolve();
+		    		})
+		    	})
+		    	return rl.close();
+		    }
+		   	work();
 		}
 	});
 }
