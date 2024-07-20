@@ -39,7 +39,7 @@ const woody = {
 // working on details series
 
 let urls_data = null;
-let index_max = 10;
+let index_max = null;
 let index = 0;
 let data_series = null;
 
@@ -80,6 +80,14 @@ const work =  async ()=>{
 				series[props[0]] = props[1].length > 1 ? props[1] : props[0];
 			})
 
+			// working on series categories
+			$('.info-content .genxed a').each((index,element)=>{
+				const props = $(element).text();
+				if(!series.categories)
+					series.categories = [];
+				series.categories.push(props);
+			})
+
 			// working on series sinopsis
 			$('.entry-content').each((index,element)=>{
 				series.sinopsis = $(element).text();	
@@ -105,6 +113,7 @@ const work =  async ()=>{
 				series.links[resolution] = item;
 		    });
 		    data_series[series.title] = series;
+		    console.log('Scrapping: ',index,'=>',series.title,`=> \x1b[32mdone\x1b[0m`);
 		    index += 1;
 		    if(index === index_max){
 		    	await new Promise((resolve,reject)=>{
@@ -186,6 +195,7 @@ work();
 // 			})	
 // 		})
 // 	}
+// 	console.clear();
 // 	woody.init({
 // 		url:geturl(Char, Index),
 // 		setConfig(p){
@@ -197,7 +207,7 @@ work();
 // 				data.push($(element).attr('href'));
 // 			})
 // 			Index += 1;
-// 			console.log(data.length)
+// 			console.log('total:',data.length);
 // 			if(Index === Page){
 // 				Page = null;
 // 				Char = null;
