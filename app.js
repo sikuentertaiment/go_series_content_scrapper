@@ -55,7 +55,9 @@ const work =  async ()=>{
 	if(!data_series)
 		await new Promise((resolve,reject)=>{
 			fs.readFile('./series_.data','utf-8',(err,data)=>{
-				data_series = JSON.parse(data);
+				if(err)
+					data_series = {};
+				else data_series = JSON.parse(data);
 				resolve();
 			})
 		})
@@ -111,29 +113,54 @@ const work =  async ()=>{
 					}
 				})
 				series.links[resolution] = item;
-		    });
-		    data_series[series.title] = series;
-		    console.log('Scrapping: ',index,'=>',series.title,`=> \x1b[32mdone\x1b[0m`);
-		    index += 1;
-		    if(index === index_max){
-		    	await new Promise((resolve,reject)=>{
-		    		fs.writeFile('./series_.data',JSON.stringify(data_series),(err)=>{
-		    			resolve();
-		    		})
-		    	})
-		    	return rl.close();
-		    }
-		   	work();
+	    });
+	    data_series[series.title] = series;
+	    console.log('Scrapping: ',index,'=>',series.title,`=> \x1b[32mdone\x1b[0m`);
+	    index += 1;
+	    if(index === index_max){
+	    	await new Promise((resolve,reject)=>{
+	    		fs.writeFile('./series_.data',JSON.stringify(data_series),(err)=>{
+	    			resolve();
+	    		})
+	    	})
+	    	return rl.close();
+	    }
+	   	work();
 		}
 	});
 }
 work();
 
 
+// code for banner
+// const get_banner = (series_name)=>{
+// 	series_name = series_name.replaceAll(' ','+');
+// 	return new Promise((resolve,reject)=>{
+// 		woody.init({
+// 			url:`https://duckduckgo.com/?t=h_&q=boruto+banner&iax=images&ia=images`,
+// 			setConfig(p){
+// 				p.config.request.url = this.url;
+// 			},
+// 			async sf($){
+// 				console.log($.html());
+// 				$('img').each((index,element)=>{
+// 					console.log($(element).attr('src'));
+// 				})
+// 			}
+// 		});
+// 	})
+// }
+
+// const tes = async ()=>{
+// 	await get_banner('boruto banner');
+// }
+// tes();
+
 // now its B
 
 
 // working getting drama list
+
 // let data = [];
 // let process_ = true;
 // let Char,Page,Base,Index = 0;
@@ -153,8 +180,8 @@ work();
 // 			});
 // 		})
 // 		if(!res){
-// 			console.log('Fail to read old data.')
-// 			return rl.close();
+// 			console.log('Fail to read old data.');
+// 			data = [];
 // 		}
 // 	}
 // 	if(!Base){
