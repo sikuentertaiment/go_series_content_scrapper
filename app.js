@@ -40,7 +40,7 @@ const woody = {
 
 let urls_data = null;
 let index_max = null;
-let index = 0;
+let index = 667;
 let data_series = null;
 
 const work =  async ()=>{
@@ -244,6 +244,15 @@ work();
 // 		}
 // 	});
 // }
-// console.clear();
+// // console.clear();
 // work();
 
+// getting the series_data index
+// fs.readFile('./series_.data', 'utf8', (err, data_) => {
+//   let data = JSON.parse(data_);
+//   let index = 0;
+//   for(let i in data){
+//   	index += 1;
+//   }
+//   console.log(index);
+// });
