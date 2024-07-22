@@ -79,7 +79,7 @@ const woody = {
 // 			$('.info-content .spe span').each((index,element)=>{
 // 				const props = $(element).text().split(': ');
 // 				props[1] = props[1].split(', ');
-// 				series[props[0]] = props[1].length > 1 ? props[1] : props[0];
+// 				series[props[0]] = props[1].length > 1 ? props[1] : props[1][0];
 // 			})
 
 // 			// working on series categories
