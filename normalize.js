@@ -80,7 +80,7 @@ const getBatchLink = (links)=>{
 					shortenedUrl: await new Promise((resolve,reject)=>{
 						axios.get(getclicksflylink(item))
 					  .then(response => {
-					  	console.log('Done');
+					  	console.log('Done =>',response.data.shortenedUrl);
 					    resolve(response.data.shortenedUrl)
 					  })
 					  .catch(error => {
@@ -105,12 +105,15 @@ const normalize = async ()=>{
 	})
 	if(!res.valid)
 		return console.log('Program stoped: Error while trying to read the data!');
+	let count = 0;
 	for(let label in res.data){
 		const series = res.data[label];
 		const series_id = getNewSeriesID();
 		const date_create = getDateCreate();
 		const keterangan = getKeterangan(series);
 		const link_batch = await getBatchLink(series.links);
+		count += 1;
+		console.log('Series index:',count);
 		const small_title = `${keterangan.Rilis ? keterangan.Rilis : '-'}, ${keterangan.Status ? keterangan.Status : '-'}`;
 		normalized_series[series_id] = {
 			series_id,
@@ -134,34 +137,34 @@ const normalize = async ()=>{
 	console.log('Process stoped: file saved.');
 }
 
-const wrap_categories = async ()=>{
-	const kategori = {};
-	const res = await new Promise((resolve,reject)=>{
-		fs.readFile('./normalized_series.data','utf8',(err,data)=>{
-			if(err)
-				return resolve({valid:false});
-			resolve({valid:true,data:JSON.parse(data)});
-		})
-	})
-	if(!res.valid)
-		return console.log('Program stoped: Cannot read series data');
-	for(let i in res.data){
-		if(!res.data[i].kategori)
-			continue;
-		res.data[i].kategori.forEach(j=>{
-			if(!kategori[j]){
-				kategori[j] = [res.data[i].series_id];
-			}else kategori[j].push(res.data[i].series_id);
-		})
-	}
-	await new Promise((resolve,reject)=>{
-		fs.writeFile('./normalized_series_categories.data',JSON.stringify(kategori),(err)=>{
-			resolve(true);
-		})
-	})
-	console.log('Process stoped: file saved.');
-}
+// const wrap_categories = async ()=>{
+// 	const kategori = {};
+// 	const res = await new Promise((resolve,reject)=>{
+// 		fs.readFile('./normalized_series.data','utf8',(err,data)=>{
+// 			if(err)
+// 				return resolve({valid:false});
+// 			resolve({valid:true,data:JSON.parse(data)});
+// 		})
+// 	})
+// 	if(!res.valid)
+// 		return console.log('Program stoped: Cannot read series data');
+// 	for(let i in res.data){
+// 		if(!res.data[i].kategori)
+// 			continue;
+// 		res.data[i].kategori.forEach(j=>{
+// 			if(!kategori[j]){
+// 				kategori[j] = [res.data[i].series_id];
+// 			}else kategori[j].push(res.data[i].series_id);
+// 		})
+// 	}
+// 	await new Promise((resolve,reject)=>{
+// 		fs.writeFile('./normalized_series_categories.data',JSON.stringify(kategori),(err)=>{
+// 			resolve(true);
+// 		})
+// 	})
+// 	console.log('Process stoped: file saved.');
+// }
 
 
-wrap_categories();
-// normalize();
+// wrap_categories();
+normalize();
