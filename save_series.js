@@ -11,7 +11,7 @@ adminfb.initializeApp({
 
 const db = getDatabase();
 
-const set = async ()=>{
+const set_series = async ()=>{
 	const res = await new Promise((resolve,reject)=>{
 		fs.readFile('./normalized_series.data','utf8',(err,data)=>{
 			if(err)
@@ -26,4 +26,20 @@ const set = async ()=>{
 	process.exit();
 }
 
-set();
+const set_categories = async ()=>{
+	const res = await new Promise((resolve,reject)=>{
+		fs.readFile('./normalized_series_categories.data','utf8',(err,data)=>{
+			if(err)
+				return resolve({valid:false});
+			resolve({valid:true,data:JSON.parse(data)});
+		})
+	})
+	if(!res.valid)
+		return console.log('Program Stoped: Cannot read series data');
+	await db.ref('kategori').set(res.data);
+	console.log('update categories successfully');
+	process.exit();
+}
+
+// set_series();
+set_categories();

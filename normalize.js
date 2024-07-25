@@ -137,34 +137,34 @@ const normalize = async ()=>{
 	console.log('Process stoped: file saved.');
 }
 
-// const wrap_categories = async ()=>{
-// 	const kategori = {};
-// 	const res = await new Promise((resolve,reject)=>{
-// 		fs.readFile('./normalized_series.data','utf8',(err,data)=>{
-// 			if(err)
-// 				return resolve({valid:false});
-// 			resolve({valid:true,data:JSON.parse(data)});
-// 		})
-// 	})
-// 	if(!res.valid)
-// 		return console.log('Program stoped: Cannot read series data');
-// 	for(let i in res.data){
-// 		if(!res.data[i].kategori)
-// 			continue;
-// 		res.data[i].kategori.forEach(j=>{
-// 			if(!kategori[j]){
-// 				kategori[j] = [res.data[i].series_id];
-// 			}else kategori[j].push(res.data[i].series_id);
-// 		})
-// 	}
-// 	await new Promise((resolve,reject)=>{
-// 		fs.writeFile('./normalized_series_categories.data',JSON.stringify(kategori),(err)=>{
-// 			resolve(true);
-// 		})
-// 	})
-// 	console.log('Process stoped: file saved.');
-// }
+const wrap_categories = async ()=>{
+	const kategori = {};
+	const res = await new Promise((resolve,reject)=>{
+		fs.readFile('./normalized_series.data','utf8',(err,data)=>{
+			if(err)
+				return resolve({valid:false});
+			resolve({valid:true,data:JSON.parse(data)});
+		})
+	})
+	if(!res.valid)
+		return console.log('Program stoped: Cannot read series data');
+	for(let i in res.data){
+		if(!res.data[i].kategori)
+			continue;
+		res.data[i].kategori.forEach(j=>{
+			if(!kategori[j]){
+				kategori[j] = [res.data[i].series_id];
+			}else kategori[j].push(res.data[i].series_id);
+		})
+	}
+	await new Promise((resolve,reject)=>{
+		fs.writeFile('./normalized_series_categories.data',JSON.stringify(kategori),(err)=>{
+			resolve(true);
+		})
+	})
+	console.log('Process stoped: file saved.');
+}
 
 
-// wrap_categories();
-normalize();
+wrap_categories();
+// normalize();
